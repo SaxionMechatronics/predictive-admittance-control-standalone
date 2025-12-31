@@ -1,0 +1,3 @@
+[submodule "3rd_party/acados"]
+	path = 3rd_party/acados
+	url = https://github.com/acados/acados.git

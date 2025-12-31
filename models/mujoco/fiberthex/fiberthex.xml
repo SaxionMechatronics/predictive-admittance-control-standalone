@@ -1,0 +1,90 @@
+<mujoco model="fiberthex">
+    <compiler inertiafromgeom="false" angle="radian" eulerseq="XYZ" autolimits="true"/>
+    <option gravity="0 0 -9.81" timestep="0.001" solver="Newton" cone="elliptic" impratio="10" tolerance="1e-10"/>
+        
+    <asset>
+        <material name="grey" rgba="0.2 0.2 0.2 1"/>
+        <material name="white" rgba="1 1 1 1"/>
+        <material name="red" rgba="1 0 0 1"/>
+
+        <material name="yellow" rgba="1 1 0 1"/>
+        <material name="pink" rgba="1 0 0.6 1"/>
+        <material name="purple" rgba="0.4 0 1 1"/>
+        <material name="green" rgba="0 0.6 0.2 1"/>
+        <material name="orange" rgba="1 0.4 0 1"/>
+        <material name="blue" rgba="0 0 1 1"/>
+
+        <mesh name="base" file="assets/base.obj" scale="0.001 0.001 0.001"/>
+
+    </asset>
+    
+    
+    <worldbody>
+        <body name="robot" pos="0 0 0.27175" euler="0 0 0.523598776">  <!--0.27175-->
+            <joint type="free"/>
+            <inertial pos="0 0 0" mass="2" diaginertia="0.06185585085 0.46467853407 0.47162119244"/>
+            <geom type="mesh" mesh="base" material="grey"/>
+            <geom name="arm" type="cylinder" size="0.01 0.3475" pos="0.300943827 -0.17375 0.0" euler="-2.61799 1.5708 0" material = "grey"/>
+            <geom name="End_Effector" type="sphere" size="0.01" pos="0.60188765563 -0.3475 0.0" euler="-2.61799 1.5708 0" material = "grey"/>
+            <geom name="prop1" type="ellipsoid" size=".13 .13 .01" pos="0.38998 0 0" euler="0.34906585 0 0" material="grey"/>
+            <geom name="prop2" type="ellipsoid" size=".13 .13 .01" pos="0.195 0.3377 0" euler="-0.34906585 0 1.0472" material="grey"/>
+            <geom name="prop3" type="ellipsoid" size=".13 .13 .01" pos="-0.195 0.3377 0" euler="0.34906585 0 2.0944" material="grey"/>
+            <geom name="prop4" type="ellipsoid" size=".13 .13 .01" pos="-0.38998 0 0" euler="0.34906585 0 0" material="grey"/>
+            <geom name="prop5" type="ellipsoid" size=".13 .13 .01" pos="-0.195 -0.3377 0" euler="-0.34906585 0 1.0472" material="grey"/>
+            <geom name="prop6" type="ellipsoid" size=".13 .13 .01" pos="0.195 -0.3377 0" euler="0.34906585 0 2.0944" material="grey"/>
+            <site name="thrust1" pos="0.38998 0 0" euler="0.34906585 0 0"/>
+            <site name="thrust2" pos="0.195 0.3377 0" euler="-0.34906585 0 1.0472"/>
+            <site name="thrust3" pos="-0.195 0.3377 0" euler="0.34906585 0 2.0944"/>
+            <site name="thrust4" pos="-0.38998 0 0" euler="0.34906585 0 0"/>
+            <site name="thrust5" pos="-0.195 -0.3377 0" euler="-0.34906585 0 1.0472"/>
+            <site name="thrust6" pos="0.195 -0.3377 0" euler="0.34906585 0 2.0944"/>
+            <site name="CoM"/>
+            <!-- <site name="End_Effector_Sensor" pos="0.60188765563 -0.3475 0.0" euler="-2.61799 1.5708 0"/> -->
+            <site name="End_Effector_Sensor" pos="0.60188765563 -0.3475 0.0" euler="0 0 -0.523598776"/>
+            <camera name="parallel_cam" mode="targetbody" target='robot' pos="-1.5 -1.0 0.5" euler="0 0 0"/>
+        </body> 
+    </worldbody>
+
+    <actuator>
+
+        <motor name="Force_X" site="CoM" ctrlrange="-30 30" gear="1 0 0 0 0 0" group="1"/>
+        <motor name="Force_Y" site="CoM" ctrlrange="-30 30" gear="0 1 0 0 0 0" group="1"/>
+        <motor name="Force_Z" site="CoM" ctrlrange="-30 30" gear="0 0 1 0 0 0" group="1"/>
+        <motor name="Torque_X" site="CoM" ctrlrange="-30 30" gear="0 0 0 1 0 0" group="1"/>
+        <motor name="Torque_Y" site="CoM" ctrlrange="-30 30" gear="0 0 0 0 1 0" group="1"/>
+        <motor name="Torque_Z" site="CoM" ctrlrange="-30 30" gear="0 0 0 0 0 1" group="1"/>
+
+    </actuator>
+
+    <sensor>
+        <!--robot parameters-->
+        <!--Linear Parameters-->
+        <framepos name="robot_pos" objtype="site" objname="CoM"/>
+        <framelinvel name="robot_vel" objtype="site" objname="CoM"/>
+        <!--<framelinacc name="robot_acc" objtype="site" objname="CoM"/>-->
+
+        <!--Rotational Parameters-->
+        <framequat name="robot_ori" objtype="site" objname="CoM"/>
+        <gyro name="robot_Angvel" site='CoM'/>
+        <!--<frameangacc name="robot_Angacc" objtype="site" objname="CoM"/>-->
+
+        <!--End_Effector parameters-->
+        <framepos name="EE_pos" objtype="site" objname="End_Effector_Sensor"/>
+        <!--<framequat name="EE_ori" objtype="site" objname="End_Effector_Sensor"/>-->
+
+        <!--End_Effector Contact-->
+        <!-- <touch name="EE_contact" site="End_Effector_Sensor"/>
+        <force name="EE_force" site="End_Effector_Sensor"/>
+        <torque name="EE_torque" site="End_Effector_Sensor"/> -->
+        <!--Properller Contact-->
+        <!--
+        <touch name="prop1_contact" site="thrust1"/>
+        <touch name="prop2_contact" site="thrust2"/>
+        <touch name="prop3_contact" site="thrust3"/>
+        <touch name="prop4_contact" site="thrust4"/>
+        <touch name="prop5_contact" site="thrust5"/>
+        <touch name="prop6_contact" site="thrust6"/>
+        -->
+
+    </sensor>
+</mujoco>

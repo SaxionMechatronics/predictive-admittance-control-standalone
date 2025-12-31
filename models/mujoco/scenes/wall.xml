@@ -1,0 +1,36 @@
+<mujoco model="physical_interaction">
+    <include file="../fiberthex/fiberthex.xml"/>
+    <statistic center="0 0 0.1" extent="5" meansize=".05"/>
+    
+    <visual>
+        <global azimuth="-10" elevation="-10" ellipsoidinertia="true" offwidth="1920" offheight="1080"/>
+        <headlight ambient="0.3 0.3 0.3" diffuse="0.6 0.6 0.6" specular="0 0 0"/>
+        <rgba haze="0.15 0.25 0.35 1"/>
+        <scale forcewidth="0.2" contactwidth="0.5" contactheight="0.2"/>
+        <map force="0.2"/>
+    </visual>
+
+    <asset>
+        <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+        <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3"
+          markrgb="0.8 0.8 0.8" width="300" height="300"/>
+        <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.0"/>
+        <material name="dark_grey" rgba="0.6 0.6 0.6 1"/>
+    </asset>
+
+    <worldbody>
+        <light pos="0 0 1.5" dir="0.1 0 -1" directional="true"/>
+        <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
+        <geom name="Wall" pos="3 0 2.5" size="0.05 5 2.5" type="box" material="dark_grey"/>
+        <camera name="scene"  pos="-2.989 1.555 1.296" xyaxes="-0.302 -0.953 -0.000 0.105 -0.033 0.994"/>
+    </worldbody>
+
+    <sensor>
+        <contact name="ft_sensor" geom1="End_Effector" geom2="Wall" data="force"/>
+    </sensor>
+
+    <contact>
+        <pair geom1="End_Effector" geom2="Wall" solref="0.002 1" solimp="0.99 0.99 0.001 0.5 2" friction="1 1 0.005 0.0001 0.0001"/>
+    </contact>
+
+</mujoco>

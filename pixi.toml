@@ -1,0 +1,98 @@
+[workspace]
+name = "predictive-admittance-control"
+version = "0.1.0"
+description = "Predictive Admittance Control Framework for Aerial Vehicles"
+authors = ["Ayham Alharbat <a.alharbat@saxion.nl>"]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64"]
+
+[dependencies]
+# Python and core dependencies
+python = "3.12.*"
+numpy = ">=2.0,<3.0"
+scipy = ">=1.16"
+matplotlib-base = ">=3.10"
+scienceplots = ">=2.2.0,<3"
+casadi = "3.7.*"
+pip = "*"
+
+# MuJoCo dependencies
+glfw = { version = "*", channel = "conda-forge" }
+
+# Build tools for acados
+cmake = ">=3.20"
+make = "*"
+gcc = "*"
+gxx = "*"
+
+# Linear algebra libraries (required by acados)
+openblas = "*"
+libblas = "*"
+libcblas = "*"
+liblapack = "*"
+
+[tasks]
+# Clone and initialize submodules
+init-submodules = "git submodule update --init --recursive"
+
+# Build and install acados
+build-acados = { cmd = """
+    cd 3rd_party/acados && \
+    mkdir -p build && \
+    cd build && \
+    cmake -DACADOS_WITH_QPOASES=OFF -DACADOS_WITH_OSQP=OFF .. && \
+    make -j4 install && \
+    cd ../interfaces/acados_template && \
+    pip install -e . --no-build-isolation
+""", depends-on = ["init-submodules"] }
+
+# Set environment variables for acados
+setup-env = { cmd = """
+    export ACADOS_SOURCE_DIR=$(pwd)/3rd_party/acados
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/3rd_party/acados/lib
+    export ACADOS_INSTALL_DIR=$(pwd)/3rd_party/acados
+    echo 'Acados environment variables set:'
+    echo "  ACADOS_SOURCE_DIR=$ACADOS_SOURCE_DIR"
+    echo "  ACADOS_INSTALL_DIR=$ACADOS_INSTALL_DIR"
+    echo "  LD_LIBRARY_PATH includes acados libraries"
+""" }
+
+# Install Python dependencies via pip (mujoco and others not in conda)
+install-pip-deps = { cmd = "pip install 'mujoco>=3.3.0' 'pyopengl>=3.1.0' 'imageio[ffmpeg]' absl-py etils fsspec importlib-resources typing-extensions" }
+
+# Fix tera renderer compatibility for systems with older GLIBC
+# This removes the incompatible v0.2.0 and downloads v0.0.34 which works with older GLIBC
+fix-tera = { cmd = """
+    rm -f 3rd_party/acados/bin/t_renderer && \
+    python -c \"from acados_template import get_tera; get_tera(tera_version='0.0.34', force_download=True); print('✅ Tera renderer v0.0.34 installed (compatible with older GLIBC)')\"
+""", depends-on = ["build-acados"] }
+
+# Complete setup - run everything in order
+setup = { depends-on = ["init-submodules", "build-acados", "install-pip-deps", "fix-tera"] }
+
+# Run the example
+run-example = { cmd = "python -m examples.mujoco_fiberthex_standalone_pac", depends-on = ["setup"] }
+
+# Clean build artifacts
+clean = { cmd = """
+    rm -rf 3rd_party/acados/build
+    rm -rf 3rd_party/acados/bin
+    rm -rf 3rd_party/acados/include
+    rm -rf 3rd_party/acados/lib
+    rm -rf c_generated_code
+    rm -rf *.json
+""" }
+
+[pypi-dependencies]
+# These will be installed via pip as they're not available in conda
+mujoco = ">=3.3.0"
+pyopengl = ">=3.1.0"
+imageio = { version = "*", extras = ["ffmpeg"] }
+absl-py = "*"
+etils = "*"
+fsspec = "*"
+importlib-resources = "*"
+typing-extensions = "*"
+
+[activation]
+env = { ACADOS_SOURCE_DIR = "$PIXI_PROJECT_ROOT/3rd_party/acados", ACADOS_INSTALL_DIR = "$PIXI_PROJECT_ROOT/3rd_party/acados", LD_LIBRARY_PATH = "$PIXI_PROJECT_ROOT/3rd_party/acados/lib:$LD_LIBRARY_PATH" }
