@@ -1,7 +1,7 @@
 <mujoco model="fiberthex">
     <compiler inertiafromgeom="false" angle="radian" eulerseq="XYZ" autolimits="true"/>
     <option gravity="0 0 -9.81" timestep="0.001" solver="Newton" cone="elliptic" impratio="10" tolerance="1e-10"/>
-        
+
     <asset>
         <material name="grey" rgba="0.2 0.2 0.2 1"/>
         <material name="white" rgba="1 1 1 1"/>
@@ -17,8 +17,8 @@
         <mesh name="base" file="assets/base.obj" scale="0.001 0.001 0.001"/>
 
     </asset>
-    
-    
+
+
     <worldbody>
         <body name="robot" pos="0 0 0.27175" euler="0 0 0.523598776">  <!--0.27175-->
             <joint type="free"/>
@@ -42,7 +42,7 @@
             <!-- <site name="End_Effector_Sensor" pos="0.60188765563 -0.3475 0.0" euler="-2.61799 1.5708 0"/> -->
             <site name="End_Effector_Sensor" pos="0.60188765563 -0.3475 0.0" euler="0 0 -0.523598776"/>
             <camera name="parallel_cam" mode="targetbody" target='robot' pos="-1.5 -1.0 0.5" euler="0 0 0"/>
-        </body> 
+        </body>
     </worldbody>
 
     <actuator>

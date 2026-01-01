@@ -17,7 +17,7 @@ This document provides detailed instructions for setting up the Predictive Admit
    ```bash
    curl -fsSL https://pixi.sh/install.sh | bash
    ```
-   
+
    Or on macOS with Homebrew:
    ```bash
    brew install pixi

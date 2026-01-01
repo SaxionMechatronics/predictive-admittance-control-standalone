@@ -31,6 +31,9 @@ libblas = "*"
 libcblas = "*"
 liblapack = "*"
 
+# others
+pre-commit = ">=4.5.1,<5"
+
 [tasks]
 # Clone and initialize submodules
 init-submodules = "git submodule update --init --recursive"

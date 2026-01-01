@@ -1,5 +1,6 @@
-import mujoco
 import os
+
+import mujoco
 
 # Paths
 base_dir = os.path.dirname(os.path.abspath(__file__))

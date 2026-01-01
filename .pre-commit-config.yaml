@@ -1,0 +1,63 @@
+exclude: ^3rd_party/
+repos:
+  - repo: https://github.com/python/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        args: ["--line-length", "88", "--unstable"]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies: [flake8-simplify, flake8-return]
+        args:
+          - "--max-line-length=88"
+          - "--extend-ignore=E501"
+          - "--exit-zero"  # return a successful exit code even if it finds errors.
+
+  # - repo: https://github.com/pycqa/autoflake
+  #   rev: v2.2.0
+  #   hooks:
+  #     - id: autoflake
+  #       args:
+  #         - --in-place
+  #         - --remove-unused-variables
+  #         - --remove-all-unused-imports
+  #         - --expand-star-imports
+  #       exclude: ^3rd_party/
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (python)
+        args: ["--profile", "black", "--filter-files"]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.1
+    hooks:
+      - id: pyupgrade
+        args: ["--py312-plus"]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-symlinks
+      - id: destroyed-symlinks
+      - id: check-added-large-files
+      - id: check-yaml
+      - id: check-case-conflict
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: check-shebang-scripts-are-executable
+      - id: detect-private-key
+      - id: debug-statements
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        additional_dependencies:
+          - tomli

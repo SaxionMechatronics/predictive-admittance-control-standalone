@@ -1,7 +1,7 @@
 <mujoco model="physical_interaction">
     <include file="../fiberthex/fiberthex.xml"/>
     <statistic center="0 0 0.1" extent="5" meansize=".05"/>
-    
+
     <visual>
         <global azimuth="-10" elevation="-10" ellipsoidinertia="true" offwidth="1920" offheight="1080"/>
         <headlight ambient="0.3 0.3 0.3" diffuse="0.6 0.6 0.6" specular="0 0 0"/>

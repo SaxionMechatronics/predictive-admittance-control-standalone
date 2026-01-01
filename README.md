@@ -1,5 +1,9 @@
 # Predictive Admittance Control (PAC)
 
+[![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://docs.python.org/3/whatsnew/3.12.html)
+[![Solver: ACADOS](https://img.shields.io/badge/Solver-ACADOS-brightgreen)](https://github.com/acados/acados)
+
+
 ![PAC Simulation](extra/render.gif)
 
 A standalone implementation of Predictive Admittance Control (PAC) for Aerial Physical Interaction with fully actuated hexarotors. This project uses **Acados** for real-time nonlinear model predictive control (NMPC) and **MuJoCo** for high-fidelity physics simulation.
