@@ -11,15 +11,18 @@ A standalone implementation of Predictive Admittance Control (PAC) for Aerial Ph
 ## 📚 References
 
 This implementation is based on:
-- **[1]** A. Alharbat, et al., "Predictive Admittance Control for Aerial Physical Interaction," in IEEE RA-L 2025
-- **[2]** A. Alharbat, et al., "Three Fundamental Paradigms for Aerial Physical Interaction Using Nonlinear Model Predictive Control," in ICUAS 2022
+- **[1]** A. Alharbat, et al., "Predictive Admittance Control for Aerial Physical Interaction," in IEEE RA-L 2025. [[Preprint]](https://ayhamalharbat.github.io/publication/2025-4-ral/2025-4-RAL.pdf)
+- **[2]** A. Alharbat, et al., "Three Fundamental Paradigms for Aerial Physical Interaction Using Nonlinear Model Predictive Control," in ICUAS 2022. [[Preprint]](https://ris.utwente.nl/ws/portalfiles/portal/286552943/Three_Fundamental_Paradigms_for_Aerial_Physical_Interaction_Using_Nonlinear_Model_Predictive_Control.pdf)
 
 ## ✨ Features
 
 - **Standalone Implementation**: Self-contained code for easy understanding and modification, with references to the papers
 - **Real-time Optimization**: Powered by Acados with efficient QP solvers
 - **High-fidelity Simulation**: MuJoCo physics engine with contact dynamics
-- **Comprehensive Logging**: Detailed data logging of the simulations, generating `.pkl` file and visualization of the logged data, and video rendering of the simulation.
+- **Comprehensive Logging/Visualization**
+  - Detailed data logging of the simulations
+  - Generating `.pkl` file and visualization of the logged data
+  - Video rendering of the simulation
 - **Extra**: a standalone implementation of a trajectory tracking NMPC in `extra/trajectory_track_mpc_standalone.py`
 
 ## 📦 Installation
@@ -58,3 +61,7 @@ The simulation generates comprehensive logs in the `logs/` directory:
 - **`.mp4` files**: Simulation videos (optional)
 
 See the docstring in [pac_standalone.py](pac_standalone.py) for details on the log file format.
+
+## Acknowledgments
+
+This work was partially supported by Regioorgaan SIA under projects **MAESTRO-Drone** (RAAK.MKB21.026) and **AEROWIND** (RAAK.PRO06.091).
