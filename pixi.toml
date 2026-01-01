@@ -49,6 +49,25 @@ build-acados = { cmd = """
     pip install -e . --no-build-isolation
 """, depends-on = ["init-submodules"] }
 
+patch-acados-macos = { cmd = """
+    bash -c '
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        ACADOS_LIB_DIR="$PIXI_PROJECT_ROOT/3rd_party/acados/lib"
+
+        if [[ -d "$ACADOS_LIB_DIR" ]]; then
+            echo "Patching acados libraries for macOS..."
+            for lib in "$ACADOS_LIB_DIR"/*.dylib; do
+                [[ -f "$lib" ]] || continue
+                install_name_tool -add_rpath "$ACADOS_LIB_DIR" "$lib" 2>/dev/null || true
+            done
+            echo "Acados libraries patched"
+        fi
+    else
+        echo "Not on macOS, skipping library patching"
+    fi
+    '
+""", depends-on = ["build-acados"] }
+
 # Set environment variables for acados
 setup-env = { cmd = """
     export ACADOS_SOURCE_DIR=$(pwd)/3rd_party/acados
@@ -71,7 +90,7 @@ fix-tera = { cmd = """
 """, depends-on = ["build-acados"] }
 
 # Complete setup - run everything in order
-setup = { depends-on = ["init-submodules", "build-acados", "install-pip-deps", "fix-tera"] }
+setup = { depends-on = ["init-submodules", "build-acados", "patch-acados-macos", "install-pip-deps", "fix-tera"] }
 
 # Run the example
 run-example = { cmd = "python -m examples.mujoco_fiberthex_standalone_pac", depends-on = ["setup"] }

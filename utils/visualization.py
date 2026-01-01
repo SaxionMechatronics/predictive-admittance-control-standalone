@@ -2,6 +2,7 @@
 Visualization utilities for simulation results
 """
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import animation
@@ -115,6 +116,9 @@ class ResultsVisualizer:
 
     def plot_all(self, save_path: str | None = None):
         """Create comprehensive plot of all states and controls"""
+
+        if save_path:
+            matplotlib.use("agg")
 
         fig = plt.figure(figsize=(20, 15))
 
@@ -363,8 +367,9 @@ class ResultsVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=150, bbox_inches="tight")
             print(f"Plot saved to {save_path}")
-
-        plt.show()
+            plt.close(fig)  # Clean up when saving to file
+        else:
+            plt.show()
 
     def animate_3d(self, frame_skip: int = 10, save_path: str | None = None):
         """
