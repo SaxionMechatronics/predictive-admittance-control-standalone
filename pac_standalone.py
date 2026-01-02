@@ -239,7 +239,6 @@ class HexarotorDynamics:
         self.M_sym = None
         self.D_sym = None
         self.K_sym = None
-        self.kappa_sym = None
 
     def setup_symbolic_model(self) -> tuple[ca.SX, ca.SX, ca.SX]:
         """Setup hexarotor dynamics"""
@@ -311,9 +310,6 @@ class HexarotorDynamics:
         M_mat = ca.diag(self.M_sym)
         D_mat = ca.diag(self.D_sym)
         K_mat = ca.diag(self.K_sym)
-
-        # Contact switching parameter
-        self.kappa_sym = ca.SX.sym("kappa", 1)
 
         imp_pos_dot = imp_vel
         # p_z_ddot = M^(-1) * (-D * p_z_dot - K * p_z + f_c_w)
@@ -520,13 +516,7 @@ class NMPCController:
         model.u = controls
         model.f_expl_expr = x_dot
         model.p = ca.vertcat(
-            refs,
-            W,
-            W_u,
-            self.dynamics.M_sym,
-            self.dynamics.D_sym,
-            self.dynamics.K_sym,
-            self.dynamics.kappa_sym,
+            refs, W, W_u, self.dynamics.M_sym, self.dynamics.D_sym, self.dynamics.K_sym
         )
 
         ocp = AcadosOcp()
@@ -598,11 +588,6 @@ class NMPCController:
             contact_forces: Contact forces acting on the end effector (optional,
                            defaults to [0, 0, 0])
         """
-        if np.abs(contact_forces[0]) > 0.5:
-            kappa = 1.0
-        else:
-            kappa = 0.0
-
         weights = self.ctrl_cfg.get_weight_vector()
         w_u = self.ctrl_cfg.get_control_weight_vector()
 
@@ -630,7 +615,7 @@ class NMPCController:
                 refs[7:10] = future_ref.get("velocity", np.zeros(3))
                 refs[10:13] = future_ref.get("angular_velocity", np.zeros(3))
 
-                param_vector = np.concatenate([refs, weights, w_u, M, D, K, [kappa]])
+                param_vector = np.concatenate([refs, weights, w_u, M, D, K])
                 self.solver.set(i, "p", param_vector)
         else:
             # Original behavior: same reference for all horizon points
@@ -640,7 +625,7 @@ class NMPCController:
             refs[7:10] = reference.get("velocity", np.zeros(3))
             refs[10:13] = reference.get("angular_velocity", np.zeros(3))
 
-            param_vector = np.concatenate([refs, weights, w_u, M, D, K, [kappa]])
+            param_vector = np.concatenate([refs, weights, w_u, M, D, K])
 
             for i in range(self.ctrl_cfg.horizon):
                 self.solver.set(i, "p", param_vector)

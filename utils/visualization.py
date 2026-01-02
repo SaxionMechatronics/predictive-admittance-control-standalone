@@ -5,8 +5,12 @@ Visualization utilities for simulation results
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import scienceplots
 from matplotlib import animation
 from scipy.spatial.transform import Rotation as R
+
+plt.style.use(["ieee", "bright", "no-latex"])
+matplotlib.rcParams.update({"font.size": 8})
 
 
 def quat_to_rotation_matrix(qw, qx, qy, qz):
